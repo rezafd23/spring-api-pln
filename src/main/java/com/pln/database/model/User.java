@@ -12,8 +12,17 @@ public class User {
     String no_ktp;
     String nama_user;
     String no_hp;
+    String status;
 
     public User() {
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getId_user() {

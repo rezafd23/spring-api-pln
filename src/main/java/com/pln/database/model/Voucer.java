@@ -11,8 +11,17 @@ public class Voucer {
 
     String voucer;
     int harga;
+    String status;
 
     public Voucer() {
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getId_voucer() {

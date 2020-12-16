@@ -6,7 +6,6 @@ import javax.persistence.*;
 @Table(name = "tbl_token")
 public class Token {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     int id_token;
 
     String no_token;
@@ -15,9 +14,18 @@ public class Token {
     String portal_bayar;
     String status_bayar;
     String status_redeem;
+    String status;
     String kode_bayar;
 
     public Token() {
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getId_token() {

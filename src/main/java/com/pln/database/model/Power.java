@@ -6,13 +6,21 @@ import javax.persistence.*;
 @Table(name="tbl_daya")
 public class Power {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     int id_daya;
 
     String daya;
     Double tarif;
+    String status;
 
     public Power() {
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getId_daya() {
