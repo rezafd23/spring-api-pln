@@ -35,6 +35,7 @@ public class DatabaseReceiver {
     }
 
     public void addPower() {
+        String queueNameReceive="addPowerMessage";
         try {
             connectRabbitMQ();
             channel = connection.createChannel();
@@ -46,14 +47,14 @@ public class DatabaseReceiver {
 //                System.out.println("Hasil RES POWER SERVICE: "+res);
                 if (res == 1) {
                     try {
-                        sender.sendToRestApi(String.valueOf(res));
+                        sender.sendToRestApi(String.valueOf(res),queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Add Power: ");
                         e.printStackTrace();
                     }
                 } else {
                     try {
-                        sender.sendToRestApi("0");
+                        sender.sendToRestApi("0",queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Add Power: ");
                         e.printStackTrace();
@@ -68,6 +69,7 @@ public class DatabaseReceiver {
     }
 
     public void editPower() {
+        String queueNameReceive="editPowerMessage";
         try {
             connectRabbitMQ();
             channel = connection.createChannel();
@@ -79,14 +81,14 @@ public class DatabaseReceiver {
 //                System.out.println("Hasil RES POWER SERVICE: "+res);
                 if (res == 1) {
                     try {
-                        sender.sendToRestApi(String.valueOf(res));
+                        sender.sendToRestApi(String.valueOf(res),queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Edit Power: ");
                         e.printStackTrace();
                     }
                 } else {
                     try {
-                        sender.sendToRestApi("0");
+                        sender.sendToRestApi("0",queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Edit Power: ");
                         e.printStackTrace();
@@ -101,6 +103,7 @@ public class DatabaseReceiver {
     }
 
     public void deletePower() {
+        String queueNameReceive="deletePowerMessage";
         try {
             connectRabbitMQ();
             channel = connection.createChannel();
@@ -112,14 +115,14 @@ public class DatabaseReceiver {
 //                System.out.println("Hasil RES POWER SERVICE: "+res);
                 if (res == 1) {
                     try {
-                        sender.sendToRestApi(String.valueOf(res));
+                        sender.sendToRestApi(String.valueOf(res),queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Delete Power: ");
                         e.printStackTrace();
                     }
                 } else {
                     try {
-                        sender.sendToRestApi("0");
+                        sender.sendToRestApi("0",queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Delete Power: ");
                         e.printStackTrace();
@@ -134,6 +137,7 @@ public class DatabaseReceiver {
     }
 
     public void getVoucer() {
+        String queueNameReceive="getPowerMessage";
         try {
             connectRabbitMQ();
             channel = connection.createChannel();
@@ -148,14 +152,14 @@ public class DatabaseReceiver {
                 if (voucerList.size()>0) {
                     try {
                         String res = new Gson().toJson(voucerList);
-                        sender.sendToRestApi(res);
+                        sender.sendToRestApi(res,queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Get Voucer: ");
                         e.printStackTrace();
                     }
                 } else {
                     try {
-                        sender.sendToRestApi("0");
+                        sender.sendToRestApi("0",queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Get Voucer: ");
                         e.printStackTrace();
@@ -170,6 +174,7 @@ public class DatabaseReceiver {
     }
 
     public void getCustomerById() {
+        String queueNameReceive="getCustomerByIdMessage";
         try {
             connectRabbitMQ();
             channel = connection.createChannel();
@@ -184,14 +189,14 @@ public class DatabaseReceiver {
                 if (pelanggan!=null) {
                     try {
                         String res = new Gson().toJson(pelanggan);
-                        sender.sendToRestApi(res);
+                        sender.sendToRestApi(res,queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Get CustomerById: ");
                         e.printStackTrace();
                     }
                 } else {
                     try {
-                        sender.sendToRestApi("0");
+                        sender.sendToRestApi("0",queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Get Voucer: ");
                         e.printStackTrace();
@@ -206,6 +211,7 @@ public class DatabaseReceiver {
     }
 
     public void buyToken() {
+        String queueNameReceive="buyTokenMessage";
         try {
             connectRabbitMQ();
             channel = connection.createChannel();
@@ -217,14 +223,14 @@ public class DatabaseReceiver {
 //                System.out.println("Hasil RES POWER SERVICE: "+res);
                 if (res == 1) {
                     try {
-                        sender.sendToRestApi(String.valueOf(res));
+                        sender.sendToRestApi(String.valueOf(res),queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Add Power: ");
                         e.printStackTrace();
                     }
                 } else {
                     try {
-                        sender.sendToRestApi("0");
+                        sender.sendToRestApi("0",queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Add Power: ");
                         e.printStackTrace();
@@ -235,6 +241,74 @@ public class DatabaseReceiver {
             });
         } catch (Exception e) {
             System.out.println("Error Add Power = " + e);
+        }
+    }
+
+    public void redeemToken() {
+        String queueNameReceive="redeemTokenMessage";
+        try {
+            connectRabbitMQ();
+            channel = connection.createChannel();
+            channel.queueDeclare("redeemToken", false, false, false, null);
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String buyToken = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Received '" + buyToken + "'");
+                int res = tokenService.redeemToken(buyToken);
+//                System.out.println("Hasil RES POWER SERVICE: "+res);
+                if (res == 1) {
+                    try {
+                        sender.sendToRestApi(String.valueOf(res),queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Redeem Token: ");
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        sender.sendToRestApi("0",queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Redeem Token: ");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            channel.basicConsume("redeemToken", true, deliverCallback, consumerTag -> {
+            });
+        } catch (Exception e) {
+            System.out.println("Error Add Power = " + e);
+        }
+    }
+
+    public void getActiveToken() {
+        String queueNameReceive="getTokenActiveMessage";
+        try {
+            connectRabbitMQ();
+            channel = connection.createChannel();
+            channel.queueDeclare("getActiveToken", false, false, false, null);
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String no_pelanggan = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Received '" + no_pelanggan + "'");
+                String res = tokenService.getToken(no_pelanggan);
+//                System.out.println("Hasil RES POWER SERVICE: "+res);
+                if (!res.equals("null")) {
+                    try {
+                        sender.sendToRestApi(res,queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Get Active Token: ");
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        sender.sendToRestApi("0",queueNameReceive);
+                    } catch (Exception e) {
+                        System.out.println("Error Get Active Token: ");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            channel.basicConsume("getActiveToken", true, deliverCallback, consumerTag -> {
+            });
+        } catch (Exception e) {
+            System.out.println("Error Get Active Token = " + e);
         }
     }
 }

@@ -21,7 +21,8 @@ public class CustomerController {
         if (apikey.equals("1001")){
             try {
                 ApiSender.sendToDb(no_pelanggan,"getCustomerById");
-                String res = receiver.receiveFromDatabase();
+                String queueNameReceive="getCustomerByIdMessage";
+                String res = receiver.receiveFromDatabase(queueNameReceive);
                 JSONParser parser = new JSONParser();
                 JSONArray jsonArray = (JSONArray) parser.parse(res);
 

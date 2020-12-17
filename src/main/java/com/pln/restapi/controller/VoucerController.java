@@ -11,10 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,8 +26,9 @@ public class VoucerController {
         JSONObject object = new JSONObject();
         if (apikey.equals("1001")){
             try {
+                String queueNameReceive="getPowerMessage";
                 ApiSender.sendToDb("getVoucer","getVoucer");
-                String res = receiver.receiveFromDatabase();
+                String res = receiver.receiveFromDatabase(queueNameReceive);
                 JSONParser parser = new JSONParser();
                 JSONArray jsonArray = (JSONArray) parser.parse(res);
 //                JSONArray voucer = (JSONArray) jsonArray.get(0);
@@ -70,4 +68,6 @@ public class VoucerController {
             return new ResponseEntity<>(object, HttpStatus.UNAUTHORIZED);
         }
     }
+
+
 }

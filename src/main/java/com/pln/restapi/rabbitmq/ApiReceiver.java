@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 public class ApiReceiver {
     private String powerMessage;
 
-    public String receiveFromDatabase() throws IOException, TimeoutException {
+    public String receiveFromDatabase(String queueName)  {
         powerMessage="";
         try {
             ConnectionFactory factory = new ConnectionFactory();
@@ -20,7 +20,7 @@ public class ApiReceiver {
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
-            channel.queueDeclare("messageFromDatabase", false, false, false, null);
+            channel.queueDeclare(queueName, false, false, false, null);
             System.out.println(" [*] Waiting for messages from database");
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
@@ -29,7 +29,7 @@ public class ApiReceiver {
                 powerMessage=message;
 
             };
-            channel.basicConsume("messageFromDatabase", true, deliverCallback, consumerTag -> {
+            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
             });
 //            System.out.println(" [x] IsiPowerMessagge '" + powerMessage + "'");
             while (powerMessage.equals("")){

@@ -26,8 +26,9 @@ public class PowerController {
         JSONObject object = new JSONObject();
         if (apikey.equals("1001")) {
             try {
+                String queueNameReceive="addPowerMessage";
                 ApiSender.sendToDb(new Gson().toJson(power),"addPower");
-                String res = receiver.receiveFromDatabase();
+                String res = receiver.receiveFromDatabase(queueNameReceive);
                 if (res.contains("1")) {
                     object.put("response", 200);
                     object.put("status", "Success");
@@ -62,8 +63,9 @@ public class PowerController {
         if (apikey.equals("1001")){
             try {
                 power.setId_daya(id_power);
+                String queueNameReceive="editPowerMessage";
                 ApiSender.sendToDb(new Gson().toJson(power),"editPower");
-                String res = receiver.receiveFromDatabase();
+                String res = receiver.receiveFromDatabase(queueNameReceive);
                 if (res.contains("1")) {
                     object.put("response", 200);
                     object.put("status", "Success");
@@ -97,8 +99,9 @@ public class PowerController {
         JSONObject object = new JSONObject();
         if (apikey.equals("1001")){
             try {
+                String queueNameReceive="deletePowerMessage";
                 ApiSender.sendToDb(new Gson().toJson(id_power),"deletePower");
-                String res = receiver.receiveFromDatabase();
+                String res = receiver.receiveFromDatabase(queueNameReceive);
                 if (res.contains("1")) {
                     object.put("response", 200);
                     object.put("status", "Success");

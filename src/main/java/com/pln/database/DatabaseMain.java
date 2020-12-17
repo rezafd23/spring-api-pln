@@ -13,6 +13,8 @@ public class DatabaseMain {
             receiver.getVoucer();
             receiver.getCustomerById();
             receiver.buyToken();
+            receiver.redeemToken();
+            receiver.getActiveToken();
         }catch (Exception e){
             System.out.println("Error DatabaseMain = " + e);
         }

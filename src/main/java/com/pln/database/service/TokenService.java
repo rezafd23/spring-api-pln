@@ -51,4 +51,26 @@ public class TokenService {
             return 0;
         }
     }
+
+    public int redeemToken(String no_token) {
+        connectJPA();
+        int res = tokenDao.redeemToken(no_token);
+        try {
+            commitJPA(entityManager);
+            return res;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public String getToken(String no_pelanggan){
+        connectJPA();
+        double res = tokenDao.getToken(no_pelanggan);
+        try {
+            commitJPA(entityManager);
+            return String.valueOf(res);
+        } catch (Exception e) {
+            return "null";
+        }
+    }
 }
