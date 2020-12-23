@@ -20,12 +20,12 @@ public class TokenDao {
         this.entityTransaction = this.entityManager.getTransaction();
     }
 
-    public int buyToken(Token token) {
+    public String buyToken(Token token) {
         token.setStatus("1");
         token.setStatus_redeem("non");
         token.setNo_token(Util.generateToken());
         entityManager.persist(token);
-        return 1;
+        return token.getNo_token();
     }
 
     public int redeemToken(String token) {

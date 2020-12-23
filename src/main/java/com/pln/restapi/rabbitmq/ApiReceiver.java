@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class ApiReceiver {
-    private String powerMessage;
+    private String receiverMessage;
 
     public String receiveFromDatabase(String queueName)  {
-        powerMessage="";
+        receiverMessage="";
         try {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost("localhost");
@@ -26,16 +26,16 @@ public class ApiReceiver {
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
                 System.out.println(" [x] Received '" + message + "'");
-                powerMessage=message;
+                receiverMessage=message;
 
             };
             channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
             });
 //            System.out.println(" [x] IsiPowerMessagge '" + powerMessage + "'");
-            while (powerMessage.equals("")){
+            while (receiverMessage.equals("")){
                 TimeUnit.MILLISECONDS.sleep(100);
             }
-            return powerMessage;
+            return receiverMessage;
         } catch (Exception e){
             System.out.println("Add Power Api Receiver Error: ");
             e.printStackTrace();

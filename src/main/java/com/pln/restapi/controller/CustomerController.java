@@ -23,40 +23,61 @@ public class CustomerController {
                 ApiSender.sendToDb(no_pelanggan,"getCustomerById");
                 String queueNameReceive="getCustomerByIdMessage";
                 String res = receiver.receiveFromDatabase(queueNameReceive);
-                JSONParser parser = new JSONParser();
-                JSONArray jsonArray = (JSONArray) parser.parse(res);
+                System.out.println("isiRes: "+res.replace("\"",""));
 
-//                JSONArray pelanggan = (JSONArray) jsonArray.get(0);
-                System.out.println("isiRes: "+res);
-                System.out.println("isiResJSON: "+jsonArray);
-//                    JSONArray pelanggan = (JSONArray) jsonArray.get(0);
+                if (res.equals("\"0\"")){
+                    object.put("response", "400");
+                    object.put("status", "Error");
+                    object.put("message", "Internal Server Error");
+                    return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
+                }else if (res.equals("\"2\"")){
+                    object.put("response", "400");
+                    object.put("status", "Eroor");
+                    object.put("message", "Data Tidak Ditemukan");
+                    return new ResponseEntity<>(object, HttpStatus.OK);
+                } else  {
+                    JSONParser parser = new JSONParser();
+                    JSONArray jsonArray= (JSONArray) parser.parse(res);
+                    System.out.println("isiResJSON: "+jsonArray.get(0));
+
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("nama",jsonArray.get(0));
                     jsonObject.put("no_pelanggan",jsonArray.get(1));
                     jsonObject.put("daya",jsonArray.get(2));
                     jsonObject.put("tarif",jsonArray.get(3));
 
-                if (res.contains("1")) {
-                    object.put("response", 200);
+                    object.put("response", "200");
                     object.put("status", "Success");
                     object.put("payload", jsonObject);
                     return new ResponseEntity<>(object, HttpStatus.OK);
-                } else {
-                    object.put("response", 400);
-                    object.put("status", "Error");
-                    object.put("message", "Internal Server Error");
-                    return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
                 }
+//                JSONParser parser = new JSONParser();
+
+//                if (!res.equals("0")||res.equals("2")){
+//                JSONArray jsonArray= (JSONArray) parser.parse(res);
+//                }
+
+//                JSONArray pelanggan = (JSONArray) jsonArray.get(0);
+//                System.out.println("isiResJSON: "+jsonArray);
+////                    JSONArray pelanggan = (JSONArray) jsonArray.get(0);
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("nama",jsonArray.get(0));
+//                    jsonObject.put("no_pelanggan",jsonArray.get(1));
+//                    jsonObject.put("daya",jsonArray.get(2));
+//                    jsonObject.put("tarif",jsonArray.get(3));
+
+
+
             } catch (Exception e)
             {
                 System.out.println("error = " + e);
-                object.put("response", 400);
+                object.put("response", "400");
                 object.put("status", "Error");
                 object.put("message", "Internal Server Error");
                 return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
             }
         } else {
-            object.put("response", 401);
+            object.put("response", "401");
             object.put("status", "Unauthorized");
             object.put("message", "Invalid Apikey Access");
             return new ResponseEntity<>(object, HttpStatus.UNAUTHORIZED);

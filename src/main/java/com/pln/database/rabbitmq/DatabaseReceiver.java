@@ -219,11 +219,11 @@ public class DatabaseReceiver {
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String buyToken = new String(delivery.getBody(), StandardCharsets.UTF_8);
                 System.out.println(" [x] Received '" + buyToken + "'");
-                int res = tokenService.buyToken(buyToken);
+                String res = tokenService.buyToken(buyToken);
 //                System.out.println("Hasil RES POWER SERVICE: "+res);
-                if (res == 1) {
+                if (!res.equals("0")) {
                     try {
-                        sender.sendToRestApi(String.valueOf(res),queueNameReceive);
+                        sender.sendToRestApi(res,queueNameReceive);
                     } catch (Exception e) {
                         System.out.println("Error Add Power: ");
                         e.printStackTrace();

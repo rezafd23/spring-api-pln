@@ -37,10 +37,10 @@ public class TokenService {
         }
     }
 
-    public int buyToken(String buyToken) {
+    public String buyToken(String buyToken) {
         Token token = new Gson().fromJson(buyToken, Token.class);
         connectJPA();
-        int res = tokenDao.buyToken(token);
+        String res = tokenDao.buyToken(token);
 //        System.out.println("PowerService1_1: " + res);
         try {
             commitJPA(entityManager);
@@ -48,7 +48,7 @@ public class TokenService {
         } catch (Exception e) {
 //            e.printStackTrace();
 //            System.out.println("PowerService1_2");
-            return 0;
+            return "0";
         }
     }
 

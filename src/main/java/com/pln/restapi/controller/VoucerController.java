@@ -43,12 +43,12 @@ public class VoucerController {
                     listVoucer.add(jsonObject);
                 }
                 if (res.contains("1")) {
-                    object.put("response", 200);
+                    object.put("response", "200");
                     object.put("status", "Success");
                     object.put("payload", listVoucer);
                     return new ResponseEntity<>(object, HttpStatus.OK);
                 } else {
-                    object.put("response", 400);
+                    object.put("response", "400");
                     object.put("status", "Error");
                     object.put("message", "Internal Server Error");
                     return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
@@ -56,13 +56,13 @@ public class VoucerController {
             } catch (Exception e)
             {
                 System.out.println("error = " + e);
-                object.put("response", 400);
+                object.put("response", "400");
                 object.put("status", "Error");
                 object.put("message", "Internal Server Error");
                 return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
             }
         } else {
-            object.put("response", 401);
+            object.put("response", "401");
             object.put("status", "Unauthorized");
             object.put("message", "Invalid Apikey Access");
             return new ResponseEntity<>(object, HttpStatus.UNAUTHORIZED);

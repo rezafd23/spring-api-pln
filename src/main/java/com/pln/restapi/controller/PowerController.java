@@ -18,7 +18,7 @@ import java.util.Properties;
 public class PowerController {
     public final ApiReceiver receiver = new ApiReceiver();
 //    private Properties properties = new Properties();
-//    private String propName = "config.properties";
+//    private String propName = "application.properties";
 
     // -------------------Add Power-------------------------------------------
     @RequestMapping(value = "/add/", method = RequestMethod.POST)
