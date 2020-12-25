@@ -1,6 +1,7 @@
 package com.pln.restapi.controller;
 
 import com.google.gson.Gson;
+import com.pln.database.model.BuyTokenParam;
 import com.pln.database.model.Power;
 import com.pln.database.model.Token;
 import com.pln.restapi.rabbitmq.ApiReceiver;
@@ -28,48 +29,52 @@ public class TokenController {
 
     // -------------------Buy Token-------------------------------------------
     @RequestMapping(value = "/buy/", method = RequestMethod.POST)
-    public ResponseEntity<?> addPower(@RequestBody Token token, @RequestHeader String apikey) {
+//    public ResponseEntity<?> addPower(@RequestBody Token token, @RequestHeader String apikey) {
+    public ResponseEntity<?> addPower(@RequestBody BuyTokenParam token, @RequestHeader String apikey) {
         JSONObject object = new JSONObject();
         JSONObject object2 = new JSONObject();
         if (apikey.equals("1001")) {
             try {
-                    Calendar calendar1 = Calendar.getInstance();
-                    calendar1.set(Calendar.HOUR, 1);
-                    calendar1.set(Calendar.MINUTE, 0);
-                    calendar1.set(Calendar.SECOND, 0);
+                Calendar calendar1 = Calendar.getInstance();
+                calendar1.set(Calendar.HOUR_OF_DAY, 1);
+//                calendar1.set(Calendar.HOUR, 01);
+                calendar1.set(Calendar.MINUTE, 0);
+                calendar1.set(Calendar.SECOND, 0);
+//                Calendar1.get(Calendar.HOUR_OF_DAY);
 
-                    Calendar calendar2 = Calendar.getInstance();
-                    calendar2.set(Calendar.HOUR, 2);
-                    calendar2.set(Calendar.MINUTE, 0);
-                    calendar2.set(Calendar.SECOND, 0);
+                Calendar calendar2 = Calendar.getInstance();
+                calendar2.set(Calendar.HOUR_OF_DAY, 2);
+                calendar2.set(Calendar.MINUTE, 0);
+                calendar2.set(Calendar.SECOND, 0);
 
-                    Calendar calendar3 = Calendar.getInstance();
 
-                    Date x = calendar3.getTime();
-                    if (x.after(calendar1.getTime()) && x.before(calendar2.getTime())) {
+                Calendar calendar3 = Calendar.getInstance();
+                Date x = calendar3.getTime();
+
+                if (x.after(calendar1.getTime()) && x.before(calendar2.getTime())) {
+                    object.put("response", 400);
+                    object.put("status", "Error");
+                    object.put("message", "Internal Server Error, Server is Maintanance");
+                    return new ResponseEntity<>(object, HttpStatus.OK);
+//                        System.out.println("CEKHASIL: BENAR");
+                } else {
+                    String queueNameReceive = "buyTokenMessage";
+                    ApiSender.sendToDb(new Gson().toJson(token), "buyToken");
+                    String res = receiver.receiveFromDatabase(queueNameReceive);
+                    if (!res.equals("0")) {
+                        object.put("response", 200);
+                        object.put("status", "Success");
+                        object2.put("token", res);
+                        object.put("payload", object2);
+                        return new ResponseEntity<>(object, HttpStatus.OK);
+                    } else {
                         object.put("response", 400);
                         object.put("status", "Error");
-                        object.put("message", "Internal Server Error, Server is Maintanance");
-                        return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
-//                        System.out.println("CEKHASIL: BENAR");
-                    } else {
-                        String queueNameReceive = "buyTokenMessage";
-                        ApiSender.sendToDb(new Gson().toJson(token), "buyToken");
-                        String res = receiver.receiveFromDatabase(queueNameReceive);
-                        if (res.contains("1")) {
-                            object.put("response", 200);
-                            object.put("status", "Success");
-                            object2.put("token", res);
-                            object.put("payload", object2);
-                            return new ResponseEntity<>(object, HttpStatus.OK);
-                        } else {
-                            object.put("response", 400);
-                            object.put("status", "Error");
-                            object.put("message", "Internal Server Error");
-                            return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
-                        }
-//                        System.out.println("CEKHASIL: SALAH");
+                        object.put("message", "Internal Server Error");
+                        return new ResponseEntity<>(object, HttpStatus.OK);
                     }
+//                        System.out.println("CEKHASIL: SALAH");
+                }
 
 
             } catch (Exception e) {

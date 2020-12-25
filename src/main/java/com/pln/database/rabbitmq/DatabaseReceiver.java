@@ -11,6 +11,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -219,7 +221,20 @@ public class DatabaseReceiver {
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String buyToken = new String(delivery.getBody(), StandardCharsets.UTF_8);
                 System.out.println(" [x] Received '" + buyToken + "'");
-                String res = tokenService.buyToken(buyToken);
+                String res="0";
+                try {
+                    JSONParser parser = new JSONParser();
+                    JSONObject jsonObject = (JSONObject) parser.parse(buyToken);
+                    Object id_pelanggan =customerService.getCustomerId(jsonObject.get("no_pelanggan").toString());
+                    System.out.println("id_pelanggan: "+id_pelanggan);
+                    jsonObject.remove("no_pelanggan");
+                    jsonObject.put("id_pelanggan",id_pelanggan);
+                    res = tokenService.buyToken(jsonObject.toJSONString());
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+//                String res = tokenService.buyToken(buyToken);
+//
 //                System.out.println("Hasil RES POWER SERVICE: "+res);
                 if (!res.equals("0")) {
                     try {

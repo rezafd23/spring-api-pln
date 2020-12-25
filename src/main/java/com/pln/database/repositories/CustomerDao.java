@@ -23,6 +23,17 @@ public class CustomerDao {
         return customer.getId_user();
     }
 
+    public Object getCustomerId(String no_pelanggan){
+        String id_pelanggan = "SELECT id_pelanggan FROM Customer WHERE no_pelanggan=:no_pelanggan";
+        Query query = entityManager.createQuery(id_pelanggan);
+        query.setParameter("no_pelanggan",no_pelanggan);
+        if (query.getResultList().size()>0){
+            return query.getResultList().get(0);
+        } else {
+        return "0";
+        }
+    }
+
     public Object getCustomerById(String no_pelanggan) {
         String select = "SELECT nama,no_pelanggan,daya,tarif FROM ViewPelanggan WHERE no_pelanggan=:no_pelanggan";
         Query query = entityManager.createQuery(select);

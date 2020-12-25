@@ -42,4 +42,11 @@ public class CustomerService {
         commitJPA(entityManager);
         return pelanggan;
     }
+
+    public Object getCustomerId(String no_pelanggan){
+        connectJPA();
+        Object id_pelanggan = customerDao.getCustomerId(no_pelanggan);
+        commitJPA(entityManager);
+        return id_pelanggan;
+    }
 }
